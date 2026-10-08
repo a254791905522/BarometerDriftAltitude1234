@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07131f">
+    <title>BarometerDriftAltitude — Catch the Moving Altitude Band</title>
+    <meta name="description" content="BarometerDriftAltitude is a free casual game. Guide a drifting hot air balloon up a vertical shaft with burner charges and ballast bags, and reach a moving altitude band before those lifts run out.">
+    <style>
+        :root {
+            --sky: #07131f;
+            --sky-2: #12283a;
+            --mist: #d7e6f0;
+            --cream: #f4efe6;
+            --cream-2: #e7dfd2;
+            --ink: #14202b;
+            --muted: #5d6c78;
+            --soft: rgba(244, 239, 230, 0.76);
+            --coral: #e15a3a;
+            --coral-deep: #b83b22;
+            --gold: #f0b45a;
+            --band: #3ecfb2;
+            --wicker: #8a5a32;
+            --line: rgba(244, 239, 230, 0.14);
+            --shadow: 0 24px 50px rgba(0, 0, 0, 0.32);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+            color: var(--cream);
+            background: var(--sky);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse 48% 36% at 88% -8%, rgba(240, 180, 90, 0.32), transparent 62%),
+                radial-gradient(ellipse 36% 28% at 0% 18%, rgba(62, 207, 178, 0.16), transparent 58%),
+                radial-gradient(ellipse 70% 42% at 50% 110%, rgba(225, 90, 58, 0.2), transparent 55%);
+        }
+
+        a { color: inherit; }
+
+        a:focus-visible, .btn:focus-visible {
+            outline: 2px solid var(--band);
+            outline-offset: 3px;
+        }
+
+        .wrap {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 28px 22px 72px;
+        }
+
+        .bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 42px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand svg { width: 48px; height: 48px; flex: none; }
+
+        .brand strong {
+            display: block;
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-weight: 700;
+            font-size: clamp(0.98rem, 2.1vw, 1.28rem);
+            letter-spacing: 0.01em;
+            line-height: 1.05;
+        }
+
+        .brand small {
+            display: block;
+            margin-top: 2px;
+            color: var(--gold);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .bar nav {
+            display: flex;
+            gap: 22px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .bar nav a { text-decoration: none; color: rgba(244, 239, 230, 0.7); }
+        .bar nav a:hover { color: var(--cream); }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--band);
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .eyebrow i {
+            width: 18px;
+            height: 10px;
+            border-radius: 8px 8px 2px 2px;
+            background: linear-gradient(#ff8a62, var(--coral));
+            box-shadow: 0 6px 0 -2px var(--wicker);
+            display: inline-block;
+        }
+
+        h1 {
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-weight: 700;
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            line-height: 0.9;
+            letter-spacing: -0.03em;
+            margin-bottom: 18px;
+        }
+
+        h1 span { display: block; color: var(--gold); }
+
+        .lede {
+            color: var(--soft);
+            font-size: 1.08rem;
+            line-height: 1.7;
+            max-width: 38rem;
+            margin-bottom: 18px;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 26px;
+        }
+
+        .chips span {
+            border: 1px solid rgba(244, 239, 230, 0.22);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(244, 239, 230, 0.9);
+        }
+
+        .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 13px 18px;
+            transition: transform 0.16s ease;
+        }
+
+        .btn:hover { transform: translateY(-2px); }
+
+        .btn-go {
+            background: linear-gradient(180deg, #ffd089, var(--gold));
+            color: var(--ink);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--cream);
+            border: 1.5px solid rgba(244, 239, 230, 0.35);
+        }
+
+        .shaft {
+            background:
+                linear-gradient(180deg, rgba(215, 230, 240, 0.08), transparent 30%),
+                var(--sky-2);
+            border: 1px solid var(--line);
+            border-radius: 36px 36px 28px 28px;
+            box-shadow: var(--shadow);
+            padding: 14px 14px 16px;
+        }
+
+        .shaft svg { width: 100%; height: auto; display: block; }
+
+        .balloon, .target {
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .balloon { animation: drift 5.2s ease-in-out infinite alternate; }
+        .target { animation: sweep 6.4s ease-in-out infinite alternate; }
+
+        @keyframes drift {
+            from { transform: translateY(10px); }
+            to { transform: translateY(-16px); }
+        }
+
+        @keyframes sweep {
+            from { transform: translateY(0); }
+            to { transform: translateY(78px); }
+        }
+
+        .readout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .readout span {
+            background: rgba(7, 19, 31, 0.45);
+            border-radius: 12px;
+            padding: 8px 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(244, 239, 230, 0.82);
+        }
+
+        .readout .flame { color: #ffb067; }
+        .readout .bag { color: var(--gold); }
+        .readout .band { color: var(--band); }
+
+        .lifts {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .lift {
+            border-radius: 22px;
+            padding: 22px 22px 24px;
+            color: var(--ink);
+            min-height: 100%;
+        }
+
+        .lift.burner {
+            background:
+                radial-gradient(circle at 100% 0%, rgba(255, 176, 103, 0.7), transparent 42%),
+                var(--cream);
+        }
+
+        .lift.ballast {
+            background:
+                radial-gradient(circle at 0% 100%, rgba(138, 90, 50, 0.22), transparent 46%),
+                var(--cream);
+        }
+
+        .lift svg { width: 42px; height: 42px; display: block; margin-bottom: 14px; }
+
+        .lift h2 {
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-size: 2rem;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .lift p { color: var(--muted); line-height: 1.6; font-size: 1.02rem; }
+
+        .fly { margin-top: 68px; }
+
+        .fly h2, .tighten h2 {
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-weight: 700;
+            font-size: clamp(2.1rem, 4vw, 3.2rem);
+            letter-spacing: -0.03em;
+            line-height: 0.95;
+        }
+
+        .fly .intro, .tighten .intro {
+            max-width: 40rem;
+            margin-top: 12px;
+            color: var(--soft);
+            line-height: 1.65;
+        }
+
+        .route {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 26px;
+            position: relative;
+        }
+
+        .route::before {
+            content: "";
+            position: absolute;
+            top: 28px;
+            left: 6%;
+            right: 6%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--band), var(--gold), transparent);
+        }
+
+        .route li {
+            position: relative;
+            background: rgba(244, 239, 230, 0.06);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 18px 16px 20px;
+        }
+
+        .route b {
+            display: inline-grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--sky);
+            border: 2px solid var(--band);
+            color: var(--band);
+            font-size: 0.78rem;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .route h3 {
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+
+        .route p { color: var(--soft); line-height: 1.5; font-size: 0.95rem; }
+
+        .tighten { margin-top: 68px; }
+
+        .pair {
+            margin-top: 22px;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 14px;
+        }
+
+        .panel, .device {
+            border-radius: 22px;
+            padding: 22px;
+        }
+
+        .panel {
+            background: var(--cream);
+            color: var(--ink);
+        }
+
+        .panel h3, .device h3 {
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-size: 1.7rem;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .panel p, .device p { color: var(--muted); line-height: 1.6; }
+
+        .panel ul {
+            margin-top: 14px;
+            display: grid;
+            gap: 10px;
+            list-style: none;
+        }
+
+        .panel li {
+            background: var(--cream-2);
+            border-radius: 14px;
+            padding: 12px 14px;
+            line-height: 1.5;
+        }
+
+        .panel li strong { display: block; margin-bottom: 2px; }
+
+        .device {
+            background: var(--sky-2);
+            border: 1px solid var(--line);
+            color: var(--cream);
+        }
+
+        .device p { color: var(--soft); }
+
+        .device dl {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .device div {
+            background: rgba(7, 19, 31, 0.35);
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+
+        .device dt {
+            color: var(--gold);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .device dd { font-weight: 700; }
+
+        .band-cta {
+            margin-top: 28px;
+            background: linear-gradient(110deg, #8a311c, var(--coral) 42%, #f0b45a);
+            border-radius: 22px;
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .band-cta p { line-height: 1.6; max-width: 40rem; color: #fff8ee; }
+        .band-cta .btn-go { background: var(--cream); color: var(--ink); }
+
+        footer {
+            margin-top: 26px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            color: rgba(244, 239, 230, 0.62);
+            font-size: 0.86rem;
+        }
+
+        footer a { color: var(--gold); text-decoration: none; font-weight: 700; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 900px) {
+            .hero, .lifts, .pair, .route { grid-template-columns: 1fr; }
+            .hero > *, .lifts > *, .pair > * { min-width: 0; }
+            .route::before { display: none; }
+            .route li { border-left: 3px solid var(--band); }
+            .bar { align-items: flex-start; flex-wrap: wrap; }
+            .bar nav { width: 100%; flex-wrap: wrap; }
+            .actions { flex-direction: column; align-items: stretch; }
+            .actions .btn, .band-cta .btn { width: 100%; }
+            .readout { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .readout span { letter-spacing: 0.04em; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .balloon, .target { animation: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header class="bar">
+            <a class="brand" href="index.html">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <rect width="48" height="48" rx="14" fill="#12283a"/>
+                    <ellipse cx="24" cy="20" rx="12" ry="13" fill="#e15a3a"/>
+                    <path stroke="#f0b45a" stroke-width="1.8" stroke-linecap="round" d="M14 20h20M15 25h18"/>
+                    <path stroke="#f4efe6" stroke-width="1.1" d="M18 32l-1 4M30 32l1 4"/>
+                    <rect x="18" y="35" width="12" height="6" rx="1.3" fill="#8a5a32"/>
+                    <path stroke="#ffb067" stroke-width="1.5" fill="none" d="M22 35c0-2.5 4-2.5 4 0"/>
+                </svg>
+                <span>
+                    <strong>BarometerDriftAltitude</strong>
+                    <small>Altitude puzzle</small>
+                </span>
+            </a>
+            <nav>
+                <a href="#fly">How to fly</a>
+                <a href="#shaft">The shaft</a>
+                <a href="privacy.html">Privacy</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div>
+                    <p class="eyebrow"><i></i> Casual · Free · Designed for iPad</p>
+                    <h1>Catch the band<span>before the lift is gone.</span></h1>
+                    <p class="lede">
+                        BarometerDriftAltitude puts a drifting hot air balloon in a vertical shaft. Burner charges and ballast bags each raise it by a fixed amount, and every use spends that resource for good. A target altitude band keeps moving. Reach it while you still have a lift left.
+                    </p>
+                    <div class="chips">
+                        <span>Two limited resources</span>
+                        <span>Moving altitude band</span>
+                        <span>Fixed lift per use</span>
+                        <span>English</span>
+                        <span>Age 4+</span>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-go" href="https://apps.apple.com/us/app/barometerdriftaltitude/id6816050397?uo=4" target="_blank" rel="noopener noreferrer">Download on the App Store</a>
+                        <a class="btn btn-ghost" href="privacy.html">Privacy card</a>
+                    </div>
+                </div>
+                <div class="shaft">
+                    <svg viewBox="0 0 300 520" role="img" aria-label="A hot air balloon drifting in a vertical shaft beneath a moving altitude band">
+                        <defs>
+                            <linearGradient id="well" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0" stop-color="#1a3c56"/>
+                                <stop offset="0.55" stop-color="#10283a"/>
+                                <stop offset="1" stop-color="#2a181c"/>
+                            </linearGradient>
+                            <linearGradient id="env" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0" stop-color="#ff8d68"/>
+                                <stop offset="1" stop-color="#d4482c"/>
+                            </linearGradient>
+                        </defs>
+                        <rect x="16" y="12" width="268" height="496" rx="32" fill="url(#well)"/>
+                        <g stroke="#d7e6f0" stroke-opacity="0.35" stroke-width="2" stroke-linecap="round">
+                            <path d="M42 64h26M232 64h26M42 124h16M242 124h16M42 184h26M232 184h26M42 244h16M242 244h16M42 304h26M232 304h26M42 364h16M242 364h16M42 424h26M232 424h26"/>
+                        </g>
+                        <path d="M58 40v440M242 40v440" stroke="#d7e6f0" stroke-opacity="0.28" stroke-width="2"/>
+                        <g class="target">
+                            <rect x="48" y="96" width="204" height="34" rx="8" fill="#3ecfb2" fill-opacity="0.2" stroke="#3ecfb2" stroke-width="2"/>
+                        </g>
+                        <g class="balloon">
+                            <ellipse cx="150" cy="312" rx="64" ry="72" fill="url(#env)"/>
+                            <path fill="#ffd0bc" opacity="0.38" d="M122 268c10 22 12 50 4 76 16-18 26-46 20-74-8-4-16-4-24-2z"/>
+                            <path stroke="#f0b45a" stroke-width="5" stroke-linecap="round" d="M98 308h104"/>
+                            <path stroke="#f6d48a" stroke-width="3.5" stroke-linecap="round" d="M108 336h84"/>
+                            <path fill="#c2412a" d="M122 372h56l-10 16h-36z"/>
+                            <path stroke="#f4efe6" stroke-width="1.6" d="M130 386l-6 24M170 386l6 24"/>
+                            <rect x="132" y="408" width="36" height="22" rx="3" fill="#8a5a32"/>
+                            <path stroke="#e7c39a" stroke-width="1.2" d="M141 408v22M150 408v22M159 408v22"/>
+                            <ellipse cx="150" cy="400" rx="4" ry="7" fill="#ffb067"/>
+                        </g>
+                        <ellipse cx="150" cy="470" rx="70" ry="16" fill="#e15a3a" opacity="0.18"/>
+                    </svg>
+                    <div class="readout" aria-hidden="true">
+                        <span class="flame">Burner</span>
+                        <span class="bag">Ballast</span>
+                        <span class="band">Moving band</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lifts" aria-label="Lift resources">
+                <article class="lift burner">
+                    <svg viewBox="0 0 48 48" aria-hidden="true">
+                        <rect width="48" height="48" rx="14" fill="#14202b"/>
+                        <path fill="#ffb067" d="M24 8c6 8 10 14 10 20a10 10 0 0 1-20 0c0-6 4-12 10-20z"/>
+                        <path fill="#e15a3a" d="M24 18c3 4 5 7 5 10a5 5 0 0 1-10 0c0-3 2-6 5-10z"/>
+                    </svg>
+                    <h2>Burner charges</h2>
+                    <p>Fire a charge and the balloon rises a fixed step. That charge is gone afterward. Later in a run, fewer charges remain, so the moment you spend one matters.</p>
+                </article>
+                <article class="lift ballast">
+                    <svg viewBox="0 0 48 48" aria-hidden="true">
+                        <rect width="48" height="48" rx="14" fill="#14202b"/>
+                        <path fill="#f0b45a" d="M16 14h16l2 6v14a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V20l2-6z"/>
+                        <path stroke="#8a5a32" stroke-width="2" d="M18 20h12"/>
+                        <path stroke="#f4efe6" stroke-width="1.6" d="M20 12V8h8v4"/>
+                    </svg>
+                    <h2>Ballast bags</h2>
+                    <p>A ballast bag is the other lift. It also raises the balloon by a fixed amount, and using it permanently consumes that bag. You choose the resource as well as the timing.</p>
+                </article>
+            </section>
+
+            <section class="fly" id="fly">
+                <h2>Four decisions in the shaft.</h2>
+                <p class="intro">You do not steer a free climb. The balloon drifts, the band moves, and each lift is a single spent step. Read the gap, then spend.</p>
+                <ol class="route">
+                    <li>
+                        <b>01</b>
+                        <h3>Sight the band</h3>
+                        <p>The target is an altitude band traveling through the shaft. Its place on the next moment is part of the puzzle.</p>
+                    </li>
+                    <li>
+                        <b>02</b>
+                        <h3>Pick a lift</h3>
+                        <p>Burner charges and ballast bags are separate supplies. Either one raises the balloon by a fixed amount.</p>
+                    </li>
+                    <li>
+                        <b>03</b>
+                        <h3>Spend it once</h3>
+                        <p>The unit you use does not return. A lift spent early is a lift missing when the band shifts again.</p>
+                    </li>
+                    <li>
+                        <b>04</b>
+                        <h3>Meet the altitude</h3>
+                        <p>Reach the target altitude while options remain. When both supplies are exhausted, the run has no further raise.</p>
+                    </li>
+                </ol>
+            </section>
+
+            <section class="tighten" id="shaft">
+                <h2>The shaft gets stricter.</h2>
+                <p class="intro">As a flight goes on, careful resource management becomes the whole game. The listing describes two pressures that arrive together.</p>
+                <div class="pair">
+                    <article class="panel">
+                        <h3>What changes</h3>
+                        <p>The goal stays the same: put the balloon on the moving band. The room to miss gets smaller.</p>
+                        <ul>
+                            <li>
+                                <strong>Supplies thin out</strong>
+                                Burner charges and ballast bags become more limited. Each remaining unit has to cover a real gap.
+                            </li>
+                            <li>
+                                <strong>The band wanders</strong>
+                                Target movement becomes less predictable. A raise that fit the last position can miss the next one.
+                            </li>
+                        </ul>
+                    </article>
+                    <article class="device" id="devices">
+                        <h3>On Apple devices</h3>
+                        <p>Designed for iPad. The listing requires iOS 15 or later and is offered in English. It also names iPhone, iPod touch, Mac with Apple silicon, and Apple Vision. The Mac build is marked not verified for macOS.</p>
+                        <dl>
+                            <div>
+                                <dt>Category</dt>
+                                <dd>Casual</dd>
+                            </div>
+                            <div>
+                                <dt>Price</dt>
+                                <dd>Free</dd>
+                            </div>
+                            <div>
+                                <dt>Language</dt>
+                                <dd>English</dd>
+                            </div>
+                            <div>
+                                <dt>Age</dt>
+                                <dd>4+</dd>
+                            </div>
+                            <div>
+                                <dt>System</dt>
+                                <dd>iOS 15 or later</dd>
+                            </div>
+                            <div>
+                                <dt>Layout</dt>
+                                <dd>Designed for iPad</dd>
+                            </div>
+                        </dl>
+                    </article>
+                </div>
+            </section>
+
+            <section class="band-cta">
+                <p><strong>Product questions stay on the store listing.</strong> Support for BarometerDriftAltitude, including privacy, goes through the options on its App Store page.</p>
+                <a class="btn btn-go" href="https://apps.apple.com/us/app/barometerdriftaltitude/id6816050397?uo=4" target="_blank" rel="noopener noreferrer">Download on the App Store</a>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2026 BarometerDriftAltitude. A casual balloon puzzle for iPhone and iPad.</p>
+            <p><a href="privacy.html">Privacy</a> · <a href="https://apps.apple.com/us/app/barometerdriftaltitude/id6816050397?uo=4" target="_blank" rel="noopener noreferrer">App Store</a></p>
+        </footer>
+    </div>
+</body>
+</html>

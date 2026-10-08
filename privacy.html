@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07131f">
+    <title>Privacy Card — BarometerDriftAltitude</title>
+    <meta name="description" content="Privacy card for BarometerDriftAltitude. The App Store label says the developer does not collect data from this balloon altitude game. Flight state stays on the device.">
+    <style>
+        :root {
+            --sky: #07131f;
+            --sky-2: #12283a;
+            --mist: #d7e6f0;
+            --cream: #f4efe6;
+            --cream-2: #e7dfd2;
+            --ink: #14202b;
+            --muted: #5d6c78;
+            --soft: rgba(244, 239, 230, 0.76);
+            --coral: #e15a3a;
+            --coral-deep: #b83b22;
+            --gold: #f0b45a;
+            --band: #3ecfb2;
+            --wicker: #8a5a32;
+            --line: rgba(244, 239, 230, 0.14);
+            --shadow: 0 24px 50px rgba(0, 0, 0, 0.32);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+            color: var(--cream);
+            background: var(--sky);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse 42% 32% at 0% -6%, rgba(62, 207, 178, 0.2), transparent 60%),
+                radial-gradient(ellipse 40% 30% at 100% 0%, rgba(240, 180, 90, 0.24), transparent 58%),
+                radial-gradient(ellipse 50% 28% at 70% 100%, rgba(225, 90, 58, 0.16), transparent 55%);
+        }
+
+        a:focus-visible, .btn:focus-visible {
+            outline: 2px solid var(--band);
+            outline-offset: 3px;
+        }
+
+        .wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 28px 22px 72px;
+        }
+
+        .bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand svg { width: 48px; height: 48px; flex: none; }
+
+        .brand strong {
+            display: block;
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-weight: 700;
+            font-size: clamp(0.98rem, 2.1vw, 1.28rem);
+            letter-spacing: 0.01em;
+            line-height: 1.05;
+        }
+
+        .brand small {
+            display: block;
+            margin-top: 2px;
+            color: var(--gold);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .bar nav { display: flex; gap: 22px; font-weight: 600; font-size: 0.95rem; }
+        .bar nav a { color: rgba(244, 239, 230, 0.7); text-decoration: none; }
+        .bar nav a:hover, .bar nav a[aria-current="page"] { color: var(--cream); }
+
+        .cluster {
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .mast {
+            background:
+                linear-gradient(160deg, rgba(62, 207, 178, 0.16), transparent 42%),
+                var(--sky-2);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            padding: 28px 28px 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .dated {
+            color: var(--gold);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-weight: 700;
+            font-size: clamp(2.3rem, 5vw, 3.6rem);
+            line-height: 0.92;
+            letter-spacing: -0.03em;
+            margin-bottom: 14px;
+        }
+
+        .lead {
+            color: var(--soft);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-width: 40rem;
+        }
+
+        .dials {
+            display: grid;
+            gap: 10px;
+        }
+
+        .dials article {
+            background: var(--cream);
+            color: var(--ink);
+            border-radius: 18px;
+            padding: 14px 16px 16px;
+        }
+
+        .dials strong {
+            display: block;
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-size: 1.35rem;
+            letter-spacing: -0.03em;
+            color: var(--coral-deep);
+        }
+
+        .dials span {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+
+        .jumps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0 0 14px;
+        }
+
+        .jumps a {
+            text-decoration: none;
+            color: var(--cream);
+            border: 1px solid rgba(244, 239, 230, 0.22);
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .jumps a:hover { border-color: var(--band); color: var(--band); }
+
+        .log {
+            background: var(--cream);
+            color: var(--ink);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .entry {
+            display: grid;
+            grid-template-columns: 108px 1fr;
+            gap: 8px;
+            padding: 26px 28px 26px 0;
+            border-top: 1px dashed rgba(20, 32, 43, 0.16);
+        }
+
+        .entry:first-child { border-top: 0; }
+
+        .alt {
+            text-align: right;
+            padding-right: 16px;
+            border-right: 3px solid var(--band);
+            color: var(--coral-deep);
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: 0.04em;
+        }
+
+        .alt small {
+            display: block;
+            margin-top: 2px;
+            color: var(--muted);
+            font-family: "Avenir Next", "Segoe UI", sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+        }
+
+        .entry h2 {
+            font-family: "Avenir Next Condensed", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+            font-size: 1.7rem;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .entry p, .entry li {
+            color: #3c4a56;
+            line-height: 1.7;
+            font-size: 1.02rem;
+        }
+
+        .entry p + p { margin-top: 10px; }
+
+        .entry ul {
+            margin: 12px 0 0 1.1rem;
+        }
+
+        .entry li + li { margin-top: 6px; }
+
+        .note {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(62, 207, 178, 0.16);
+            color: #0f4f48;
+            font-weight: 600;
+            line-height: 1.55;
+        }
+
+        .close {
+            margin-top: 14px;
+            background: linear-gradient(110deg, #8a311c, var(--coral) 46%, #f0b45a);
+            border-radius: 22px;
+            padding: 20px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .close p { line-height: 1.55; max-width: 36rem; color: #fff8ee; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 12px 16px;
+            background: var(--cream);
+            color: var(--ink);
+            white-space: nowrap;
+        }
+
+        footer {
+            margin-top: 22px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            color: rgba(244, 239, 230, 0.62);
+            font-size: 0.86rem;
+        }
+
+        footer a { color: var(--gold); text-decoration: none; font-weight: 700; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 800px) {
+            .cluster, .entry { grid-template-columns: 1fr; }
+            .cluster > *, .entry > * { min-width: 0; }
+            .bar { align-items: flex-start; flex-wrap: wrap; }
+            .bar nav { width: 100%; flex-wrap: wrap; }
+            .mast { padding: 22px 18px; }
+            .entry { padding: 22px 18px; }
+            .entry p, .entry li { overflow-wrap: anywhere; }
+            .alt {
+                text-align: left;
+                border-right: 0;
+                border-bottom: 3px solid var(--band);
+                padding: 0 0 8px;
+            }
+            .close .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header class="bar">
+            <a class="brand" href="index.html">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <rect width="48" height="48" rx="14" fill="#12283a"/>
+                    <ellipse cx="24" cy="20" rx="12" ry="13" fill="#e15a3a"/>
+                    <path stroke="#f0b45a" stroke-width="1.8" stroke-linecap="round" d="M14 20h20M15 25h18"/>
+                    <path stroke="#f4efe6" stroke-width="1.1" d="M18 32l-1 4M30 32l1 4"/>
+                    <rect x="18" y="35" width="12" height="6" rx="1.3" fill="#8a5a32"/>
+                    <path stroke="#ffb067" stroke-width="1.5" fill="none" d="M22 35c0-2.5 4-2.5 4 0"/>
+                </svg>
+                <span>
+                    <strong>BarometerDriftAltitude</strong>
+                    <small>Altitude puzzle</small>
+                </span>
+            </a>
+            <nav>
+                <a href="index.html">The game</a>
+                <a href="privacy.html" aria-current="page">Privacy</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="cluster">
+                <header class="mast">
+                    <p class="dated">Effective 8 October 2026</p>
+                    <h1>A privacy card for the altitude shaft.</h1>
+                    <p class="lead">
+                        BarometerDriftAltitude is a free casual game. A hot air balloon drifts in a vertical shaft, burner charges and ballast bags each give one fixed raise, and a target altitude band moves. This card explains the information practice around that flight. It is written for players and families, and it does not replace advice about the law where you live.
+                    </p>
+                </header>
+                <div class="dials">
+                    <article>
+                        <strong>Not collected</strong>
+                        <span>The App Store label says the developer does not collect data from this app.</span>
+                    </article>
+                    <article>
+                        <strong>No sign-in</strong>
+                        <span>A flight starts in the shaft, without a player profile.</span>
+                    </article>
+                    <article>
+                        <strong>Age 4+</strong>
+                        <span>A guardian decides whether the game is installed.</span>
+                    </article>
+                </div>
+            </div>
+
+            <nav class="jumps" aria-label="Privacy card sections">
+                <a href="#card">This card</a>
+                <a href="#label">Store label</a>
+                <a href="#state">On device</a>
+                <a href="#account">No profile</a>
+                <a href="#lift">The two lifts</a>
+                <a href="#apple">Apple</a>
+                <a href="#families">Families</a>
+                <a href="#site">This site</a>
+            </nav>
+
+            <div class="log">
+                <section class="entry" id="card">
+                    <p class="alt">400<small>FT</small></p>
+                    <div>
+                        <h2>This card</h2>
+                        <p>
+                            The card applies to the BarometerDriftAltitude app on the App Store and to the two pages published with it: the game introduction and this notice. It describes the game as a product. Questions go to the support options on the store listing.
+                        </p>
+                        <p>
+                            Your Apple ID, the store itself, Screen Time, and any device backup you turn on are Apple services. Their rules remain Apple’s terms and Apple’s privacy policy.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="entry" id="label">
+                    <p class="alt">800<small>FT</small></p>
+                    <div>
+                        <h2>The store privacy label</h2>
+                        <p>
+                            The App Store privacy section for BarometerDriftAltitude is labeled “Data Not Collected.” The developer reports that the app does not collect data. This card does not describe a tracking stream, an advertising identifier, or a third-party analytics kit beyond that label.
+                        </p>
+                        <p>
+                            Apple says privacy practices may vary, for example with the features you use or with your age. If the label on the live product page changes, read that label again. This card will be replaced if the practice written here no longer matches the game.
+                        </p>
+                        <p class="note">The public label is the check. This page does not invent a hidden event log behind it.</p>
+                    </div>
+                </section>
+
+                <section class="entry" id="state">
+                    <p class="alt">1200<small>FT</small></p>
+                    <div>
+                        <h2>Altitude state on the device</h2>
+                        <p>
+                            A flight has to keep a few ordinary facts: where the balloon sits in the shaft, where the target band sits, and how many burner charges and ballast bags are still unused. Those facts belong to the installed game on the iPhone, iPad, or other Apple device you are using.
+                        </p>
+                        <p>
+                            The store label does not present that state as data the developer collects. Delete BarometerDriftAltitude and the local app copy the system kept for it goes with the deletion. If you enable a backup yourself, such as iCloud Backup, Apple may include app data under the backup settings on your Apple ID. The product listing does not describe a separate cloud login for this game.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="entry" id="account">
+                    <p class="alt">1600<small>FT</small></p>
+                    <div>
+                        <h2>Sign-in, contacts, and location</h2>
+                        <p>
+                            You can open the shaft without creating a profile. Before the first burner charge or ballast bag, the game does not ask for an email address, phone number, real name, contact book, photo library, camera, microphone, or precise location.
+                        </p>
+                        <p>
+                            The decisions that matter are on the screen: when to lift, and whether the next fixed raise comes from a burner charge or a ballast bag. The listing does not describe those taps as a form posted to a publisher server.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="entry" id="lift">
+                    <p class="alt">2000<small>FT</small></p>
+                    <div>
+                        <h2>Burner charges and ballast bags</h2>
+                        <p>
+                            Each resource raises the balloon by a fixed amount. Using one permanently consumes that unit. They are the two supplies the shaft gives you for reaching the moving band.
+                        </p>
+                        <p>
+                            The App Store lists the game as free. This card does not describe a publisher account, a stored payment card, or a balance used to refill charges and bags. If Apple shows its own download or payment prompt on your device, that step is Apple’s transaction.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="entry" id="apple">
+                    <p class="alt">2400<small>FT</small></p>
+                    <div>
+                        <h2>Distribution through Apple</h2>
+                        <p>
+                            BarometerDriftAltitude is obtained from the App Store. Install, update, and refund requests are handled there. The listing is in English, rated 4+, requires iOS 15 or later, and is designed for iPad. It also names iPhone, iPod touch, Mac, and Apple Vision compatibility lines. The Mac line is marked not verified for macOS.
+                        </p>
+                        <p>
+                            Information Apple already holds because you use an Apple ID stays under Apple’s policy. Installing this game does not copy that information into a publisher profile.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="entry" id="families">
+                    <p class="alt">2800<small>FT</small></p>
+                    <div>
+                        <h2>Families and the 4+ rating</h2>
+                        <p>
+                            The age rating on the store is 4+. A parent or guardian chooses whether the game is installed. Screen Time, Ask to Buy, and Family Sharing can block or allow that install when those Apple controls are on.
+                        </p>
+                        <p>
+                            Play does not open with a registration form. If you believe a child sent personal information to the publisher outside ordinary play, use support on the App Store product page and include only what is needed to identify the request.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="entry" id="site">
+                    <p class="alt">3200<small>FT</small></p>
+                    <div>
+                        <h2>This site, requests, and later wording</h2>
+                        <p>
+                            The introduction and this card are static pages. They have no account form, mailing list, comment box, or payment form. Lettering uses fonts already on your device, so opening a page is not a request to a separate font host. The outbound link on both pages is the App Store listing for BarometerDriftAltitude. These pages do not link to a personal website.
+                        </p>
+                        <p>
+                            Depending on where you live, you may have a right to access, correct, or delete personal information, or to object to certain processing. The store label says data is not collected from the app, so the publisher may have no BarometerDriftAltitude file to send. You can still ask. Use the support options on the App Store listing. This site does not publish a personal email address. Leave identity documents out of the first message unless a reply asks for a narrower detail.
+                        </p>
+                        <ul>
+                            <li>Name BarometerDriftAltitude and say the note is about privacy.</li>
+                            <li>Say what you want done.</li>
+                            <li>Keep unrelated personal details out of that first note.</li>
+                        </ul>
+                        <p>
+                            The date at the top is the date of this wording. If a later build of the game starts collecting data, this page will be rewritten and the App Store privacy label should be updated to match.
+                        </p>
+                    </div>
+                </section>
+            </div>
+
+            <div class="close">
+                <p>The listing, the privacy label, and support for BarometerDriftAltitude are on the App Store page.</p>
+                <a class="btn" href="https://apps.apple.com/us/app/barometerdriftaltitude/id6816050397?uo=4" target="_blank" rel="noopener noreferrer">Download on the App Store</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2026 BarometerDriftAltitude. Privacy card for the altitude puzzle.</p>
+            <p><a href="index.html">The game</a> · <a href="https://apps.apple.com/us/app/barometerdriftaltitude/id6816050397?uo=4" target="_blank" rel="noopener noreferrer">App Store</a></p>
+        </footer>
+    </div>
+</body>
+</html>
